@@ -1,12 +1,15 @@
 #Libraries 
 library(dplyr)
-
 install.packages("tidyverse")
 library(tidyverse)
 
 install.packages("ggplot2")
 library(ggplot2)
 install.packages("arules")
+library(arules)
+
+install.packages("arulesViz")
+library(arulesViz)
 
 #Load cleaned dataset
 cleaned_data <- read.csv("D:/Education/MSc - Data Sceince/Semester II/Data Mining/CW/CW_Data_Mining/cleaned_Online_Retail.csv")
@@ -55,3 +58,37 @@ transactions_list1 <- split(UnitedKingdom_data$Description, country1_data$Invoic
 transactions_list2 <- split(Germany_data$Description, country2_data$InvoiceNo)
 transactions_list3 <- split(France_data$Description, country3_data$InvoiceNo)
 
+#Convert transactions to Transaction object
+transactions1 <- as(transactions_list1, "transactions")
+transactions2 <- as(transactions_list2, "transactions")
+transactions3 <- as(transactions_list3, "transactions")
+
+inspect(head(transactions1, 5))
+inspect(head(transactions2, 5))
+inspect(head(transactions3, 5))
+
+#Finding association rules, Apply Apriori on transactions1
+rules1 <- apriori(transactions1,parameter = list(supp = 0.01, conf = 0.5, minlen = 2))
+
+# Apply Apriori on transactions2
+rules2 <- apriori(transactions2, parameter = list(supp = 0.01, conf = 0.5, minlen = 2))
+
+# Apply Apriori on transactions3                
+rules3 <- apriori(transactions3, parameter = list(supp = 0.01, conf = 0.5, minlen = 2))
+
+inspect(head(rules1, 10))
+inspect(head(rules2, 10))
+inspect(head(rules3, 10))
+
+# Inspect top rules
+inspect(sort(rules1, by = "lift")[1:10])
+inspect(sort(rules2, by = "lift")[1:10])
+inspect(sort(rules3, by = "lift")[1:10])
+
+plot(rules1, method = "grouped")
+plot(rules2, method = "grouped")
+plot(rules3, method = "grouped")
+
+plot(rules1)
+plot(rules2)
+plot(rules3)
